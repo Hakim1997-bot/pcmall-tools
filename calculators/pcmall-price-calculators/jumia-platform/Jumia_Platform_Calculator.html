@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pcmall - Dell Optiplex Pricing Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: white;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #7D3C98;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 6px solid #A3D36C;
+        }
+
+        .header h1 {
+            font-family: 'League Spartan', sans-serif;
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .calculator-section {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 6px solid #A3D36C;
+        }
+
+        .section-title {
+            font-family: 'League Spartan', sans-serif;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #7D3C98;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #7D3C98;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1.05em;
+            border: 2px solid #A3D36C;
+            border-radius: 6px;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #7D3C98;
+            box-shadow: 0 0 5px rgba(125, 60, 152, 0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #7D3C98 0%, #5a2e75 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.15em;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'League Spartan', sans-serif;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(125, 60, 152, 0.3);
+        }
+
+        .results-section {
+            background: #E8F5E9;
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 6px solid #A3D36C;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(125, 60, 152, 0.2);
+            font-size: 1.1em;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #7D3C98;
+            font-weight: 600;
+        }
+
+        .result-value {
+            color: #A3D36C;
+            font-weight: 700;
+            font-size: 1.2em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .final-price {
+            background: #7D3C98;
+            color: white;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .final-price-label {
+            font-size: 1.15em;
+            margin-bottom: 10px;
+        }
+
+        .final-price-value {
+            font-family: 'League Spartan', sans-serif;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #A3D36C;
+        }
+
+        .note {
+            background: #FFF9E6;
+            border-left: 4px solid #FFC107;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-top: 30px;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .formula-info {
+            background: #F3E5F5;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 0.95em;
+            color: #5a2e75;
+            line-height: 1.6;
+        }
+
+        .formula-title {
+            font-weight: 700;
+            color: #7D3C98;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background: #A3D36C;
+            color: #7D3C98;
+            padding: 10px 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+            width: auto;
+        }
+
+        .assumptions-section {
+            background: #FFF3E0;
+            border-left: 6px solid #FF9800;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .assumptions-title {
+            font-family: 'League Spartan', sans-serif;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #E65100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .assumptions-content {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #FFB74D;
+        }
+
+        .assumptions-content.show {
+            display: block;
+        }
+
+        .assumption-item {
+            margin: 12px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .assumption-label {
+            font-weight: 600;
+            color: #E65100;
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .toggle-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .final-price-value {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>pcmall Jumia Platform</h1>
+            <p>Dynamic Pricing Calculator for Jumia</p>
+        </div>
+
+        <div class="content">
+            <div class="assumptions-section" onclick="toggleAssumptions()">
+                <div class="assumptions-title">
+                    📋 Calculator Assumptions & Configuration
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="assumptions-content" id="assumptionsContent">
+                    <div class="assumption-item">
+                        <span class="assumption-label">Base Desktop:</span>
+                        Dell Optiplex i5 = 350,000 UGX (General market wholesale price - NOT from Muda)
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">RAM Pricing:</span>
+                        From Muda Gadgets - 4GB PC3L = 35,000 UGX per chip. Desktop has 2 slots: 4GB (1 chip), 8GB (2 chips), 16GB (2×8GB), 32GB (2×16GB)
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">Storage Pricing:</span>
+                        From Muda Gadgets - HDD: 500GB = 50,000 UGX (reference), SSD 2.5: 128GB-2TB at Muda prices
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">Monitor (19"):</span>
+                        170,000 UGX (General market wholesale price - NOT from Muda) - only included in Full Set
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">Accessories Add-on:</span>
+                        35,000 UGX (Power cables, VGA, Mouse, Keyboard - general market) - only included in Full Set
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">Pricing Platform:</span>
+                        Jumia Platform - Category 1 (Desktops & Monitors)
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">Jumia Fee:</span>
+                        16,000 UGX
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">Jumia Commission:</span>
+                        14% (for Desktops & Monitors)
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">Final Formula:</span>
+                        Final Price = (BCP + PP Add-on + 16,000) × 1.39 (100% + 14% + 25%)
+                    </div>
+                    <div class="assumption-item">
+                        <span class="assumption-label">Last Updated:</span>
+                        May 18, 2026
+                    </div>
+                </div>
+            </div>
+            <div class="calculator-section">
+                <div class="section-title">Configure Your Desktop</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="processor">Processor</label>
+                        <select id="processor">
+                            <option value="">-- Select Processor --</option>
+                            <option value="i5">Intel Core i5</option>
+                            <option value="i7">Intel Core i7</option>
+                            <option value="i9">Intel Core i9</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="generation">Generation (Optional)</label>
+                        <input type="text" id="generation" placeholder="e.g., 3020, 5040, 7050">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ram">RAM (Desktop)</label>
+                        <select id="ram">
+                            <option value="">-- Select RAM --</option>
+                            <option value="4">4GB PC3L</option>
+                            <option value="8">8GB PC3L</option>
+                            <option value="16">16GB PC4</option>
+                            <option value="32">32GB PC4</option>
+                        </select>
+                    </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="primaryStorageType">Primary Storage Type</label>
+                        <select id="primaryStorageType" onchange="updatePrimaryStorageOptions()">
+                            <option value="hdd">HDD (Hard Drive)</option>
+                            <option value="ssd">SSD 2.5 (Solid State)</option>
+                            <option value="none">NO HDD</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="primaryStorage">Primary Storage Capacity</label>
+                        <select id="primaryStorage">
+                            <option value="">-- Select Primary Storage --</option>
+                            <option value="250">250GB HDD</option>
+                            <option value="500">500GB HDD</option>
+                            <option value="1000">1TB HDD</option>
+                            <option value="2000">2TB HDD</option>
+                            <option value="3000">3TB HDD</option>
+                            <option value="4000">4TB HDD</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="secondaryStorage">Secondary Storage (SSD) - Optional</label>
+                        <select id="secondaryStorage">
+                            <option value="">-- No Secondary Storage --</option>
+                            <option value="128">128GB SSD 2.5</option>
+                            <option value="180">180GB SSD 2.5</option>
+                            <option value="256">256GB SSD 2.5</option>
+                            <option value="512">512GB SSD 2.5</option>
+                            <option value="1000">1TB SSD 2.5</option>
+                            <option value="2000">2TB SSD 2.5</option>
+                        </select>
+                    </div>
+                </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="fullSet" checked> Include Full Set (Desktop + Monitor + Accessories) - Uses Jumia Category 1
+                    </label>
+                </div>
+
+                <button onclick="calculatePrice()">Calculate Price</button>
+            </div>
+
+            <div class="results-section" id="results">
+                <div class="section-title">Price Breakdown</div>
+
+                <div class="result-row">
+                    <span class="result-label">Base Desktop (Muda Wholesale):</span>
+                    <span class="result-value" id="basePrice">0 UGX</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">RAM Adjustment:</span>
+                    <span class="result-value" id="ramAdjustment">0 UGX</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Storage Adjustment:</span>
+                    <span class="result-value" id="storageAdjustment">0 UGX</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Monitor (19"):</span>
+                    <span class="result-value" id="monitorPrice">0 UGX</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Accessories Add-on:</span>
+                    <span class="result-value" id="accessoriesPrice">0 UGX</span>
+                </div>
+
+                <div class="result-row" style="border-bottom: 2px solid #7D3C98; font-weight: 700;">
+                    <span class="result-label">Total Wholesale Cost (BCP):</span>
+                    <span class="result-value" id="totalWholesale">0 UGX</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">PP Add-on (from pcmall Guide):</span>
+                    <span class="result-value" id="ppAddon">0 UGX</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Final Cost Price (FCP):</span>
+                    <span class="result-value" id="finalCostPrice">0 UGX</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Jumia Fee (+16,000):</span>
+                    <span class="result-value" id="jumiaFee">0 UGX</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Jumia Price (before commission):</span>
+                    <span class="result-value" id="jumiaPrice">0 UGX</span>
+                </div>
+
+                <div class="final-price">
+                    <div class="final-price-label">FINAL RETAIL PRICE FOR JUMIA</div>
+                    <div class="final-price-value" id="finalPrice">0 UGX</div>
+                    <button class="copy-btn" onclick="copyPrice()">Copy Price</button>
+                </div>
+
+                <div class="formula-info">
+                    <div class="formula-title">Formula Used (Jumia Platform - Category 1: Desktops & Monitors):</div>
+                    <div>1. BCP = Muda Wholesale (Desktop + RAM adjustment + Storage adjustment + Monitor + Accessories)</div>
+                    <div>2. FCP = BCP + PP Add-on (based on BCP range from pcmall guide)</div>
+                    <div>3. Jumia Price = FCP + 16,000 (Jumia Category 1 fee)</div>
+                    <div>4. Final Price = Jumia Price × 1.39 (100% + 14% Commission + 25%)</div>
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> This calculator uses Muda Gadgets wholesale prices for RAM and Storage (HDD/SSD 2.5), and general market wholesale prices for Desktop units, Monitors, and Accessories. Retail prices calculated using pcmall's official Jumia Platform (Category 1) pricing formula. All prices in Uganda Shillings (UGX).
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Muda Wholesale Prices
+        const mudaPrices = {
+            baseDesktop: 350000,
+            monitor: 170000,
+            accessories: 35000,
+            // RAM: Price for TOTAL configuration (2 slots filled) - PC3L only
+            ram: {
+                4: 35000,      // 1 × 4GB PC3L = 35,000
+                8: 70000,      // 2 × 4GB PC3L = 35,000 × 2
+                16: 120000,    // 2 × 8GB PC3L = 60,000 × 2
+                32: 240000     // 2 × 16GB PC3L = 120,000 × 2
+            },
+            // Storage: Price for each option (replacement, not additive)
+            storage: {
+                250: 25000,    // 250GB HDD (500GB ÷ 2)
+                500: 50000,    // 500GB HDD (reference)
+                1000: 120000,  // 1TB HDD
+                2000: 180000,  // 2TB HDD
+                3000: 200000,  // 3TB HDD
+                4000: 330000   // 4TB HDD
+            },
+            // SSD 2.5 options
+            ssd: {
+                128: 50000,    // 128GB SSD 2.5
+                180: 70000,    // 180GB SSD 2.5
+                256: 110000,   // 256GB SSD 2.5
+                512: 180000,   // 512GB SSD 2.5
+                1000: 350000,  // 1TB SSD 2.5
+                2000: 600000   // 2TB SSD 2.5
+            }
+        };
+
+        // pcmall PP Add-on Table
+        const ppAddons = {
+            "0-5000": 5000,
+            "5001-10000": 6000,
+            "10001-20000": 9000,
+            "20001-50000": 15000,
+            "50001-100000": 25000,
+            "100001-200000": 35000,
+            "200001-300000": 45000,
+            "300001+": 55000
+        };
+
+        function getPPAddon(bcp) {
+            if (bcp <= 5000) return ppAddons["0-5000"];
+            if (bcp <= 10000) return ppAddons["5001-10000"];
+            if (bcp <= 20000) return ppAddons["10001-20000"];
+            if (bcp <= 50000) return ppAddons["20001-50000"];
+            if (bcp <= 100000) return ppAddons["50001-100000"];
+            if (bcp <= 200000) return ppAddons["100001-200000"];
+            if (bcp <= 300000) return ppAddons["200001-300000"];
+            return ppAddons["300001+"];
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-UG', {
+                style: 'currency',
+                currency: 'UGX',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(price);
+        }
+
+        function calculatePrice() {
+            const processor = document.getElementById('processor').value;
+            const ram = parseInt(document.getElementById('ram').value) || 4;
+            const primaryStorageType = document.getElementById('primaryStorageType').value;
+            const primaryStorage = parseInt(document.getElementById('primaryStorage').value) || 0;
+            const secondaryStorage = parseInt(document.getElementById('secondaryStorage').value) || 0;
+            const fullSet = document.getElementById('fullSet').checked;
+
+            if (!processor) {
+                alert('Please select a processor');
+                return;
+            }
+
+            if (primaryStorageType !== 'none' && !document.getElementById('primaryStorage').value) {
+                alert('Please select primary storage');
+                return;
+            }
+
+            const referenceRam = 4;
+            const referencePrimaryStorage = 500;
+            
+            const ramAdjustment = mudaPrices.ram[ram] - mudaPrices.ram[referenceRam];
+            
+            // Primary storage adjustment (HDD, SSD, or NONE)
+            let primaryStorageAdjustment = 0;
+            if (primaryStorageType === 'hdd') {
+                primaryStorageAdjustment = mudaPrices.storage[primaryStorage] - mudaPrices.storage[referencePrimaryStorage];
+            } else if (primaryStorageType === 'ssd') {
+                primaryStorageAdjustment = mudaPrices.ssd[primaryStorage] - mudaPrices.storage[referencePrimaryStorage];
+            } else if (primaryStorageType === 'none') {
+                // NO HDD - subtract the reference HDD price
+                primaryStorageAdjustment = -mudaPrices.storage[referencePrimaryStorage];
+            }
+            
+            // Secondary storage (SSD) - if selected, just add the price
+            const secondaryStoragePrice = secondaryStorage > 0 ? mudaPrices.ssd[secondaryStorage] : 0;
+            
+            let bcp = mudaPrices.baseDesktop + ramAdjustment + primaryStorageAdjustment + secondaryStoragePrice;
+
+            let monitorPrice = 0;
+            let accessoriesPrice = 0;
+            if (fullSet) {
+                monitorPrice = mudaPrices.monitor;
+                accessoriesPrice = mudaPrices.accessories;
+                bcp += monitorPrice + accessoriesPrice;
+            }
+
+            const ppAddon = getPPAddon(bcp);
+            const fcp = bcp + ppAddon;
+
+            const jumiaFee = 16000;
+            const jumiaPrice = fcp + jumiaFee;
+            const commissionMultiplier = 1.39;
+            const finalPrice = Math.round(jumiaPrice * commissionMultiplier);
+
+            document.getElementById('basePrice').textContent = formatPrice(mudaPrices.baseDesktop);
+            document.getElementById('ramAdjustment').textContent = formatPrice(ramAdjustment);
+            document.getElementById('storageAdjustment').textContent = formatPrice(primaryStorageAdjustment + secondaryStoragePrice);
+            document.getElementById('monitorPrice').textContent = formatPrice(monitorPrice);
+            document.getElementById('accessoriesPrice').textContent = formatPrice(accessoriesPrice);
+            document.getElementById('totalWholesale').textContent = formatPrice(bcp);
+            document.getElementById('ppAddon').textContent = formatPrice(ppAddon);
+            document.getElementById('finalCostPrice').textContent = formatPrice(fcp);
+            document.getElementById('jumiaFee').textContent = formatPrice(jumiaFee);
+            document.getElementById('jumiaPrice').textContent = formatPrice(jumiaPrice);
+            document.getElementById('finalPrice').textContent = formatPrice(finalPrice);
+
+            document.getElementById('finalPrice').dataset.price = finalPrice;
+
+            document.getElementById('results').classList.add('show');
+        }
+
+        function updatePrimaryStorageOptions() {
+            const primaryStorageType = document.getElementById('primaryStorageType').value;
+            const primaryStorageSelect = document.getElementById('primaryStorage');
+            
+            if (primaryStorageType === 'none') {
+                primaryStorageSelect.innerHTML = `<option value="">-- No Storage Selected --</option>`;
+                primaryStorageSelect.disabled = true;
+            } else {
+                primaryStorageSelect.disabled = false;
+                if (primaryStorageType === 'hdd') {
+                    primaryStorageSelect.innerHTML = `
+                        <option value="">-- Select Primary Storage --</option>
+                        <option value="250">250GB HDD</option>
+                        <option value="500">500GB HDD</option>
+                        <option value="1000">1TB HDD</option>
+                        <option value="2000">2TB HDD</option>
+                        <option value="3000">3TB HDD</option>
+                        <option value="4000">4TB HDD</option>
+                    `;
+                } else {
+                    primaryStorageSelect.innerHTML = `
+                        <option value="">-- Select Primary Storage --</option>
+                        <option value="128">128GB SSD 2.5</option>
+                        <option value="180">180GB SSD 2.5</option>
+                        <option value="256">256GB SSD 2.5</option>
+                        <option value="512">512GB SSD 2.5</option>
+                        <option value="1000">1TB SSD 2.5</option>
+                        <option value="2000">2TB SSD 2.5</option>
+                    `;
+                }
+            }
+        }
+
+        function copyPrice() {
+            const price = document.getElementById('finalPrice').dataset.price;
+            const formattedPrice = new Intl.NumberFormat('en-UG', {
+                minimumFractionDigits: 0
+            }).format(price);
+            
+            navigator.clipboard.writeText(formattedPrice).then(() => {
+                alert('Price copied: ' + formatPrice(price));
+            });
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculatePrice();
+        });
+
+        function toggleAssumptions() {
+            const content = document.getElementById('assumptionsContent');
+            const icon = document.querySelector('.toggle-icon');
+            content.classList.toggle('show');
+            icon.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
